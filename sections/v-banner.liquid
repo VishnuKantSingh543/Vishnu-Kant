@@ -1,0 +1,355 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    
+  /* Basic Setup */
+  .v-banner-section {
+    width: 100%;
+    background-color: #ffffff;
+    font-family: 'Jost', sans-serif;
+    overflow: hidden;
+  }
+
+  .banner-wrapper {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  /* --- PART 1: TOP FRAME STRIP --- */
+  .top-frame-part {
+    width: 100%;
+    line-height: 0;
+    font-size: 0; 
+  }
+
+  .top-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover; 
+    object-position: top center;
+  }
+
+  /* --- PART 2: BOTTOM SPLIT --- */
+  .bottom-split-part {
+    display: flex;
+    width: 100%;
+    align-items: stretch; 
+  }
+
+  /* LEFT SIDE: Text */
+  .text-side {
+    width: 40%; 
+    padding-left: 2%;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    box-sizing: border-box;
+  }
+
+  .banner-heading {
+    font-size: 70px;
+    font-weight: 500;
+    color: #000;
+    line-height: 1;
+    margin: 0 0 20px 0;
+  }
+
+  .banner-subheading {
+    font-size: 18px;
+    font-weight: 400;
+    color: #000;
+    line-height: 1.4;
+    margin: 0 0 40px 0;
+    max-width: 450px;
+  }
+
+  /* RIGHT SIDE: Image */
+  .image-side {
+    width: 60%; 
+    position: relative; 
+    min-height: 400px; 
+  }
+
+  .right-img {
+    position: absolute; 
+    top: 0;
+    left: -15px;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover; 
+    object-position: top left; 
+  }
+
+  /* --- UNIVERSAL BUTTON ANIMATION --- */
+  .shop-btn {
+    position: relative;
+    background-color: #000;
+    color: #fff;
+    padding: 15px 40px;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    border: none;
+    cursor: pointer;
+    width: fit-content;
+    overflow: hidden;   
+    z-index: 1;         
+    transition: color 0.4s ease;
+  }
+
+  /* Sliding Background Layer */
+  .shop-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;          
+    height: 100%;
+    background-color: #ffff00 !important; /* Yellow fill */
+    transition: width 300ms ease;
+    z-index: -1;        
+  }
+
+  /* SVG transition */
+  .shop-btn svg {
+    transition: stroke 0.4s ease;
+    stroke: white;
+  }
+
+  /* Hover Action */
+  .shop-btn:hover::before {
+    width: 100%;        
+  }
+
+  .shop-btn:hover {
+    color: #000;        /* Text turns black against yellow */
+  }
+
+  .shop-btn:hover svg {
+    stroke: #000;       /* Arrow turns black */
+  }
+
+  /* Mobile Button adjustments */
+  .mobile-btn-banner {
+    display: none;
+  }
+
+  /* Bottom Bar */
+  .bottom-bar {
+    background-color: #F5F5F5;
+    padding: 10px 20px;
+    text-align: center;
+    width: 100%;
+  }
+  .bottom-text {
+    font-size: 16px;
+    line-height: 13.42px;
+    text-transform: uppercase;
+    color: #000;
+    margin: 0;
+  }
+  
+  /* Helper classes for text switching */
+  .mobile-text-display { display: none; } 
+  .desktop-text-display { display: block; } 
+
+  /* --- MOBILE RESPONSIVENESS --- */
+  @media screen and (max-width: 900px) {
+    
+    .bottom-text {
+      font-size: 14px;
+    } 
+
+    .desktop-text-display { display: none; }
+    .mobile-text-display { display: block; }
+    
+    .top-frame-part {
+      display: none;
+    }
+
+    .bottom-split-part {
+      flex-direction: column; 
+    }
+
+    .text-side {
+      width: 100%;
+      padding: 50px 20px 30px 20px; 
+      text-align: center;
+      align-items: center;
+    }
+    
+    .banner-heading { 
+      font-size: 30px;
+      margin-bottom: 15px;
+    }
+    
+    .banner-subheading {
+       font-size: 16px;
+       line-height: 130%;
+       margin: 0 0 30px 0;
+    }
+
+    .text-side .shop-btn {
+      display: none;
+    }
+
+    .image-side {
+      width: 100%;
+      height: 350px;
+      min-height: auto;
+    }
+    
+    .right-img {
+      left: 0; 
+      object-position: center; 
+    }
+    
+    .mobile-btn-banner {
+      display: inline-flex;
+      position: absolute;
+      top: 80%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 5;
+      white-space: nowrap;
+    }
+  }
+</style>
+
+<div class="v-banner-section">
+  <div class="banner-wrapper">
+
+    <div class="top-frame-part">
+      {% if section.settings.image != blank %}
+        <img src="{{ section.settings.image | image_url: width: 2000 }}" 
+             alt="Frame Top" 
+             class="top-img">
+      {% endif %}
+    </div>
+
+    <div class="bottom-split-part">
+      
+      <div class="text-side">
+        <h1 class="banner-heading">{{ section.settings.heading }}</h1>
+        
+        <p class="banner-subheading desktop-text-display">{{ section.settings.subheading }}</p>
+        
+        <p class="banner-subheading mobile-text-display">
+          {% if section.settings.subheading_mobile != blank %}
+            {{ section.settings.subheading_mobile }}
+          {% else %}
+            {{ section.settings.subheading }}
+          {% endif %}
+        </p>
+        
+        <a href="{{ section.settings.link }}" class="shop-btn">
+          {{ section.settings.btn_text }}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="M12 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+
+      <div class="image-side">
+        {% if section.settings.image != blank %}
+          <img src="{{ section.settings.image | image_url: width: 1600 }}" 
+               alt="Frame Right" 
+               class="right-img">
+        {% else %}
+          <div style="width:100%; height:100%; background:#eee;"></div>
+        {% endif %}
+
+        <a href="{{ section.settings.link }}" class="shop-btn mobile-btn-banner">
+          {{ section.settings.btn_text }}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="M12 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+
+    <div class="bottom-bar">
+      <p class="bottom-text desktop-text-display">{{ section.settings.bottom_text }}</p>
+      
+      <p class="bottom-text mobile-text-display">
+        {% if section.settings.bottom_text_mobile != blank %}
+          {{ section.settings.bottom_text_mobile }}
+        {% else %}
+          {{ section.settings.bottom_text }}
+        {% endif %}
+      </p>
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "v-banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Frame Image (Upload Frame.png)"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The Gift Guide"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading (Desktop)",
+      "default": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading_mobile",
+      "label": "Subheading (Mobile)",
+      "default": "Discover Joy: Your Ultimate Holiday Gift Destination."
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "Button Text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Button Link"
+    },
+    {
+      "type": "text",
+      "id": "bottom_text",
+      "label": "Bottom Bar Text (Desktop)",
+      "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL"
+    },
+    {
+      "type": "text",
+      "id": "bottom_text_mobile",
+      "label": "Bottom Bar Text (Mobile)",
+      "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES"
+    }
+  ],
+  "presets": [
+    {
+      "name": "v-banner"
+    }
+  ]
+}
+{% endschema %}

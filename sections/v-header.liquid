@@ -1,0 +1,304 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  .tisso-header-section {
+    margin: 0;
+    padding: 0;
+    font-family: 'Jost', sans-serif;
+    background-color: #F5F5F5;
+  }
+
+  /* MAIN HEADER BAR */
+  .header-container {
+    height: 64px;
+    width: 100%;
+    background-color: #F5F5F5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    padding: 10px 50px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 20;
+    border-bottom: 1px solid transparent; 
+  }
+
+  /* LOGO */
+  .logo-link {
+    text-decoration: none;
+    color: black;
+    display: flex;
+    align-items: center;
+    z-index: 2; 
+  }
+  
+  .logo-text {
+    font-size: 20px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .logo-img {
+    max-height: 40px;
+    width: auto;
+  }
+
+  /* CENTER TEXT */
+  .desktop-center-text {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); 
+    font-size: 16px;
+    color: black;
+    white-space: nowrap; 
+  }
+
+  /* RIGHT BUTTON */
+  .yellow-btn {
+    background-color: #FFF544;
+    height: 44px;
+    min-width: 150px; 
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; 
+    
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
+    text-transform: uppercase;
+    z-index: 2; 
+  }
+
+  /* --- UNIVERSAL BUTTON ANIMATION (Desktop & Mobile) --- */
+  
+  /* 1. Base Setup for Animation */
+  .yellow-btn, .mobile-btn {
+    position: relative; /* Needed to hold the sliding layer */
+    overflow: hidden;   /* Keeps the sliding layer inside the button */
+    z-index: 1;         /* Ensures text sits on top */
+    transition: color 0.4s ease; /* Smooth text color change */
+  }
+
+  /* 2. The Sliding Background Layer (Hidden by default) */
+  .yellow-btn::before, .mobile-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;          /* Starts at 0% width (invisible) */
+    height: 100%;
+    background-color: black; /* The Dark Olive color */
+    transition: width 300ms ease; /* The slide speed */
+    z-index: -1;        /* Sits behind the text */
+  }
+
+  /* 3. Hover Action: Slide the background in */
+  .yellow-btn:hover::before, .mobile-btn:hover::before {
+    width: 100%;        /* Slides to fill the button */
+  }
+
+  /* 4. Hover Action: Change text to white */
+  .yellow-btn:hover, .mobile-btn:hover {
+    color: #ffffff;
+  }
+  
+  .btn-arrow-icon {
+    width: 20px;
+    height: 20px;
+    display: block; 
+  }
+  
+  .yellow-btn span {
+    margin-left: 10px; 
+  }
+
+  /* MOBILE ICON (Hidden on Desktop) */
+  .menu-icon-btn {
+    display: none; 
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  /* --- THE PUSH-DOWN MENU (Mobile) --- */
+  .mobile-dropdown {
+    width: 100%;
+    background-color: #F9F9F9;
+    overflow: hidden; 
+    max-height: 0; 
+    transition: max-height 0.4s ease-out; 
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .mobile-dropdown.is-open {
+    max-height: 250px; 
+  }
+
+  .mobile-content {
+    padding: 20px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .mobile-promo-text {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .mobile-btn {
+    background-color: #FFF544;
+    width: 100%;
+    max-width: 300px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    text-decoration: none;
+    color: black;
+    text-transform: uppercase;
+    font-weight: 400;
+    gap: 10px;
+  }
+
+  /* --- RESPONSIVE STYLES --- */
+  @media screen and (max-width: 768px) {
+    .desktop-center-text {
+      display: none;
+    }
+
+    .yellow-btn {
+      display: none;
+    }
+
+    .menu-icon-btn {
+      display: block;
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  
+    .header-container {
+      justify-content: center;
+      padding: 10px 20px;
+    }
+  }
+</style>
+
+<div class="tisso-header-section">
+
+  <div class="header-container" id="mainHeader">
+    
+    <button class="menu-icon-btn" onclick="toggleMobileMenu()">
+      <svg id="hamburgerIcon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+      <svg id="closeIcon" style="display:none;" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <a href="/" class="logo-link">
+      {% if section.settings.logo_img != blank %}
+        <img src="{{ section.settings.logo_img | image_url: height: 80 }}" alt="{{ shop.name }}" class="logo-img">
+      {% else %}
+        <span class="logo-text">{{ section.settings.logo_txt }}</span>
+      {% endif %}
+    </a>
+
+    <span class="desktop-center-text">
+      {{ section.settings.announcement_text }}
+    </span>
+
+    <a href="{{ section.settings.btn_link }}" class="yellow-btn">
+      {{ section.settings.btn_text }} <span>&rarr;</span>
+    </a>
+
+  </div>
+
+  <div class="mobile-dropdown" id="mobileMenu">
+    <div class="mobile-content">
+      <p class="mobile-promo-text">
+        {{section.settings.announcement_text }}
+      </p>
+      <a href="{{ section.settings.btn_link }}" class="mobile-btn">
+        {{ section.settings.btn_text }} <span>&rarr;</span>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function toggleMobileMenu() {
+    var menu = document.getElementById("mobileMenu");
+    var hamburger = document.getElementById("hamburgerIcon");
+    var close = document.getElementById("closeIcon");
+
+    if (menu.classList.contains("is-open")) {
+      menu.classList.remove("is-open");
+      hamburger.style.display = "block";
+      close.style.display = "none";
+    } else {
+      menu.classList.add("is-open");
+      hamburger.style.display = "none";
+      close.style.display = "block";
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "v-header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo_img",
+      "label": "Logo Image"
+    },
+    {
+      "type": "text",
+      "id": "logo_txt",
+      "label": "Logo Text",
+      "default": "Logo Text"
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Center Text",
+      "default": "Find the ideal gift for your loved ones."
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "Button Label",
+      "default": "CHOOSE GIFT"
+    },
+    {
+      "type": "url",
+      "id": "btn_link",
+      "label": "Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "v-header"
+    }
+  ]
+}
+{% endschema %}
