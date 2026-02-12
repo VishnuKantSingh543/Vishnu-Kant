@@ -30,21 +30,8 @@
               </button>
             </div>
 
-            <script type="application/json" id="v-data-{{ block.id }}">
-              {
-                "id": {{ product.id | json }},
-                "title": {{ product.title | json }},
-                "price": {{ product.price | json }},
-                "description": {{ product.description | strip_html | json }},
-                "featured_image": {{ product.featured_image | img_url: '800x' | json }},
-                "variants": {{ product.variants | json }},
-                "options": [
-                  {% for option in product.options_with_values %}
-                    { "name": {{ option.name | json }}, "values": {{ option.values | json }} }{% unless forloop.last %},{% endunless %}
-                  {% endfor %}
-                ]
-              }
-            </script>
+            {% render 'v-popup', product: product, block_id: block.id %}
+            
           </div>
 
         {% else %}
@@ -56,7 +43,8 @@
     </div>
   </div>
 
-  {% render 'v-popup' %}
+
+
 </section>
 
 {% schema %}

@@ -1,394 +1,392 @@
-
-<div id="v-popup-modal" class="v-overlay" onclick="closeVPopup()">
-  <div class="v-popup-box" onclick="event.stopPropagation()">
-    <button class="v-close-icon" type="button" onclick="closeVPopup()" aria-label="Close">×</button>
-
-    <div class="v-layout-flex">
-      <div class="v-col-left" id="v-img-border">
-        <img id="v-img" src="" alt="Product Image">
-      </div>
-
-      <div class="v-col-right">
-        <h3 id="v-title" class="v-item-title"></h3>
-        <p id="v-price" class="v-item-price"></p>
-        <div id="v-desc" class="v-item-desc"></div>
-      </div>
-    </div>
-
-    <div id="v-form-container">
-      <div class="v-group-wrapper" id="v-group-2" style="display:none;">
-        <label class="v-group-label" id="v-label-2"></label>
-        <div id="v-swatch-list" class="v-swatch-container"></div>
-      </div>
-
-      <div class="v-group-wrapper" id="v-group-1" style="display:none;">
-        <label class="v-group-label" id="v-label-1">Size</label>
-        <div class="v-custom-dropdown" id="v-dropdown-parent">
-          <div class="v-dropdown-header" onclick="toggleVDropdown()">
-            <span id="v-selected-text">Choose your size</span>
-            <div class="v-dropdown-arrow-box">
-              <svg id="v-arrow-icon" width="14" height="8" viewBox="0 0 14 8" fill="none">
-                <path d="M1 1L7 7L13 1" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-          </div>
-          <div class="v-dropdown-list" id="v-dropdown-list"></div>
-        </div>
-      </div>
-    </div>
-
-    <button class="v-cart-btn" id="v-submit-btn">ADD TO CART <span>→</span></button>
-  </div>
-</div>
-
 <style>
-    body.v-no-scroll {
-    overflow: hidden !important;
-    height: 100vh;
-  }
-  /* --- Modal & Overlay --- */
-  .v-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+  
+  .v-modal {
     display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 9999;
     align-items: center;
     justify-content: center;
-    z-index: 10000;
-  }
-  .v-overlay.v-open {
-    display: flex !important;
+    padding: 20px;
   }
 
-  .v-popup-box {
-    background: #fff;
-    padding: 25px;
-    width: 380px;
-    max-width: 95%;
-    position: relative;
-    border: 1px solid #eee;
-    max-height: 90vh;
-    overflow-y: visible; 
-  }
-
-  .v-layout-flex {
+  .v-modal.v-open {
     display: flex;
-    gap: 20px;
-    align-items: flex-start;
+  }
+
+  .v-modal-inner {
+    background: #e9e9e9;
+    width: 100%;
+    max-width: 460px;
+    padding: 24px;
+    position: relative;
+    font-family: 'Jost', sans-serif;
+  }
+
+  .v-close-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .v-top-row {
+    display: flex;
+    gap: 16px;
     margin-bottom: 20px;
   }
-  .v-col-left {
-    flex: 0 0 45%;
-  }
-  .v-col-left img {
-    width: 100%;
-    height: auto;
-    display: block;
-    border: 1px solid #eee;
-  }
-  .v-col-right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+
+  .v-image-wrapper img {
+    width: 90%;
+    height: 90%;
   }
 
-  
-  .v-item-title {
-    font-family: 'Jost', sans-serif;
-    font-weight: 300;
-    font-size: 20px;
-    margin: 0;
-    color: #333;
-  }
-  .v-item-price {
-    font-family: 'Jost', sans-serif;
+  .v-info-wrapper h2 {
+    font-family: 'Lustria', serif;
     font-size: 18px;
-    margin: 10px 0;
-    color: #000;
+    margin: 0 0 6px 0;
     font-weight: 400;
   }
-  .v-item-desc {
-    font-family: 'Jost', sans-serif;
+
+  .v-info-wrapper p {
+    margin: 0 0 8px 0;
     font-size: 13px;
-    line-height: 1.4;
-    color: #555;
   }
 
- 
-  .v-swatch-container {
+  .v-options-section {
+    width: 100%;
+  }
+
+  .v-option-group {
+    margin-bottom: 16px;
+  }
+
+  .v-option-label {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .v-option-values {
     display: flex;
     border: 1px solid #000;
-    width: 100%;
-    overflow: hidden;
-    margin-top: 5px;
-  }
-  .v-swatch-item {
-    flex: 1;
-    padding: 12px;
-    text-align: left;
-    cursor: pointer;
-    font-size: 15px;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    position: relative;
-    border-right: 1px solid white !important;
-  }
-  .v-swatch-item:last-child {
-    border-right: none !important;
-  }
-  .v-swatch-bar {
-    width: 6px;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    border-right: 1px solid white !important;
-  }
-  .v-swatch-text {
-    padding-left: 20px;
-    flex: 1;
-  }
-  .v-swatch-item.v-active {
-    background: #000 !important;
-    color: #fff !important;
-  }
-
- 
-  .v-custom-dropdown {
-    width: 100%;
-    position: relative;
-    font-family: 'Jost', sans-serif;
-    margin-top: 5px;
-  }
-  .v-dropdown-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid #000;
-    cursor: pointer;
-    height: 48px;
-    padding-left: 15px;
-    background: #fff;
-  }
-  .v-dropdown-arrow-box {
-    width: 48px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-left: 1px solid #000;
-  }
-
-  
-  .v-dropdown-list {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background: #fff;
-    border: 1px solid #000;
-    border-top: none;
-    display: none;
-    z-index: 50;
-    max-height: 150px; 
-    overflow-y: auto;
-  }
-
-  #v-dropdown-parent.v-open .v-dropdown-list {
-    display: block;
-  }
-  #v-dropdown-parent.v-open #v-arrow-icon {
-    transform: rotate(180deg);
   }
 
   .v-option-item {
-    padding: 12px 15px;
-    cursor: pointer;
-    border-bottom: 1px solid #eee;
-    transition: 0.1s;
-    text-align: center;
-    font-size: 15px;
+  flex: 1;
+  padding: 3% 5% !important;
+  background: #fff;
+  border: 1px solid black ;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: stretch; /* Change to stretch */
+  justify-content: flex-start;
+  gap: 0;
+  position: relative;
+  min-height: 44px;
+  overflow: hidden;
+}
+
+/* .v-option-item span:not(.v-color-swatch) {
+  padding: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 44px; /* Match the button height */
+/* } */
+
+.v-option-text {
+  padding: 12px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+} */
+
+  .v-option-item:not(:last-child) {
+    border-right: 1px solid #000;
   }
-  .v-option-item:last-child {
-    border-bottom: none;
-  }
-  .v-option-item:hover,
+
   .v-option-item.v-selected {
+    /* align-items: center; */
     background: #000;
     color: #fff;
   }
 
- 
-  .v-group-wrapper {
+  .v-color-swatch {
+    border-right: 1px solid white;
+  width: 8px;
+  height: 100%; /* ✅ Full height */
+  position: absolute; /* ✅ Position absolutely */
+  left: 0; /* ✅ Stick to left edge */
+  top: 0;
+  flex-shrink: 0;
+}
+
+  /* Dropdown for Size */
+  .v-option-dropdown {
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 12px 15px;
+    background: #fff;
+    border: 1px solid #ddd;
+    cursor: pointer;
     width: 100%;
-    margin-bottom: 15px;
+    color: #000;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23000' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    padding-right: 40px;
+    
   }
-  .v-group-label {
-    display: block;
-    font-size: 12px;
-    font-weight: 400;
-    color: #666;
-    margin-bottom: 5px;
+
+  
+.v-size-select {
+  background-color: #fff;
+  color: #000;
+}
+
+.v-size-select:focus {
+  outline: none;
+  border: 1px solid #000;
+}
+
+.v-size-select option {
+  background: #000;
+  color: #fff;
+}
+
+
+  .v-option-dropdown:focus {
+    outline: none;
+    border-color: #000;
   }
-  .v-cart-btn {
+
+  .v-submit-btn {
     width: 100%;
     background: #000;
     color: #fff;
     border: none;
-    padding: 18px;
-    font-weight: 400;
-    text-transform: uppercase;
+    padding: 14px;
+    font-size: 13px;
+    letter-spacing: 1px;
     cursor: pointer;
+    margin-top: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 30px;
-    letter-spacing: 1px;
-    font-size: 14px;
-    margin-top: 10px;
-  }
-  .v-cart-btn span {
-    font-size: 22px;
-    line-height: 1;
-  }
-  .v-close-icon {
-    position: absolute;
-    top: 1%;
-    right: 1%;
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #333;
-    z-index: 60;
+    gap: 10px;
   }
 
-  @media (max-width: 768px) {
-    .v-layout-flex {
-      flex-direction: column;
-      gap: 15px;
-    }
-    .v-col-left,
-    .v-col-right {
-      width: 100%;
-    }
+  .v-no-scroll {
+    overflow: hidden;
   }
 </style>
 
-<script>
-  let currentProductData = null;
-  let selectedColor = '';
-  let selectedSize = '';
+{% if product %}
 
-  function toggleVDropdown() {
-    document.getElementById('v-dropdown-parent').classList.toggle('v-open');
-  }
+  <!-- Hidden Product Data -->
+  <div
+    id="v-product-data-{{ block_id }}"
+    data-title="{{ product.title | escape }}"
+    data-price="{{ product.price }}"
+    data-description="{{ product.description | strip_html | escape }}"
+    data-image="{{ product.featured_image | image_url: width: 600 }}"
+  ></div>
 
-  function openVPopup(e, blockId) {
-    e.stopPropagation();
-    const dataElement = document.getElementById('v-data-' + blockId);
-    if (!dataElement) return;
+  <!-- Hidden Variant Data -->
+  <div id="v-variant-container-{{ block_id }}" style="display:none;">
+    {% for variant in product.variants %}
+      <div
+        class="v-variant-data"
+        data-variant-id="{{ variant.id }}"
+        data-available="{{ variant.available }}"
+        {% for option in product.options %}
+          data-{{ option | handle }}="{{ variant.options[forloop.index0] | escape }}"
+        {% endfor %}
+      ></div>
+    {% endfor %}
+  </div>
 
-    currentProductData = JSON.parse(dataElement.textContent);
+  <!-- POPUP MODAL -->
+  <div id="v-popup-modal-{{ block_id }}" class="v-modal">
+    <div class="v-modal-inner">
 
-    document.getElementById('v-title').innerText = currentProductData.title;
-    document.getElementById('v-price').innerText = (currentProductData.price / 100).toFixed(2).replace('.', ',') + '€';
-    document.getElementById('v-desc').innerText = currentProductData.description;
-    document.getElementById('v-img').src = currentProductData.featured_image;
+      <button onclick="closeVPopup('{{ block_id }}')" class="v-close-btn">×</button>
 
-    selectedSize = '';
-    document.getElementById('v-selected-text').innerText = 'Choose your size';
-    document.getElementById('v-dropdown-parent').classList.remove('v-open');
-    document.getElementById('v-swatch-list').innerHTML = '';
-    document.getElementById('v-dropdown-list').innerHTML = '';
+      <!-- Top Row -->
+      <div class="v-top-row">
+        <div class="v-image-wrapper">
+          <img id="v-img-{{ block_id }}" src="" alt="">
+        </div>
 
-    currentProductData.options.forEach((opt, i) => {
-      const name = opt.name.toLowerCase();
+        <div class="v-info-wrapper">
+          <h2 id="v-title-{{ block_id }}"></h2>
+          <p id="v-price-{{ block_id }}"></p>
+          <p id="v-desc-{{ block_id }}"></p>
+        </div>
+      </div>
 
-      if (name === 'color' || name === 'colour') {
-        opt.values.forEach((val, idx) => {
-          const item = document.createElement('div');
-          item.className = 'v-swatch-item' + (idx === 0 ? ' v-active' : '');
-          item.innerHTML = `<span class="v-swatch-bar" style="background-color:${val.toLowerCase()}"></span><span class="v-swatch-text">${val}</span>`;
-          if (idx === 0) selectedColor = val;
-          item.onclick = function () {
-            document.querySelectorAll('.v-swatch-item').forEach((el) => el.classList.remove('v-active'));
-            this.classList.add('v-active');
-            selectedColor = val;
-          };
-          document.getElementById('v-swatch-list').appendChild(item);
-        });
-        document.getElementById('v-group-2').style.display = 'block';
-      } else if (name === 'size') {
-        opt.values.forEach((val) => {
-          const optDiv = document.createElement('div');
-          optDiv.className = 'v-option-item';
-          optDiv.innerText = val;
-          optDiv.onclick = function () {
-            selectedSize = val;
-            document.getElementById('v-selected-text').innerText = val;
-            document.querySelectorAll('.v-option-item').forEach((el) => el.classList.remove('v-selected'));
-            this.classList.add('v-selected');
-            toggleVDropdown();
-          };
-          document.getElementById('v-dropdown-list').appendChild(optDiv);
-        });
-        document.getElementById('v-group-1').style.display = 'block';
-      }
-    });
+      <!-- Options Section -->
+      <div class="v-options-section">
 
-    document.getElementById('v-submit-btn').onclick = handleAddToCart;
-    document.getElementById('v-popup-modal').classList.add('v-open');
-    document.body.classList.add('v-no-scroll');
-  }
+        {% for option in product.options_with_values %}
+          <div class="v-option-group">
+            <p class="v-option-label">{{ option.name }}</p>
 
-  function closeVPopup() {
-    document.getElementById('v-popup-modal').classList.remove('v-open');
-    document.body.classList.remove('v-no-scroll');
-  }
+            {% if option.name == 'Size' %}
+              <!-- Dropdown for Size -->
+              <select 
+                class="v-option-dropdown"
+                data-option-name="{{ option.name | handle }}"
+                onchange="handleDropdownChange(this, '{{ block_id }}')">
+                <option value="">Choose your size</option>
+                {% for value in option.values %}
+                  <option value="{{ value | escape }}">{{ value }}</option>
+                {% endfor %}
+              </select>
+            {% else %}
+              <!-- Buttons for Color -->
+              <div class="v-option-values">
+                {% for value in option.values %}
+                  {% comment %} <span class="v-color-swatch" style="background-color: {{ value | downcase }};"></span> {% endcomment %}
+                  <button 
+                    type="button"
+                    class="v-option-item"
+                    data-option-name="{{ option.name | handle }}"
+                    data-option-value="{{ value | escape }}">
+                    <span class="v-color-swatch" style="background-color: {{ value | downcase }};"></span>
+                    {{ value }}
+                  </button>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
 
-  async function handleAddToCart() {
-    let selection = [];
-    currentProductData.options.forEach((opt) => {
-      if (opt.name.toLowerCase().includes('color')) selection.push(selectedColor);
-      if (opt.name.toLowerCase() === 'size') selection.push(selectedSize);
-    });
+        <form method="post" action="/cart/add">
+          <input
+            type="hidden"
+            name="id"
+            id="v-variant-input-{{ block_id }}"
+            value="{{ product.variants.first.id }}"
+          >
 
-    
-    const variant = currentProductData.variants.find((v) => JSON.stringify(v.options) === JSON.stringify(selection));
+          <button type="submit" class="v-submit-btn">
+            ADD TO CART <span>→</span>
+          </button>
+        </form>
 
-    if (variant) {
-      document.getElementById('v-submit-btn').innerText = 'ADDING...';
+      </div>
 
-     
-      let itemsToAdd = [{ id: variant.id, quantity: 1 }];
+    </div>
+  </div>
 
-      
-      if (selectedColor === 'Black' && selectedSize === 'M') {
-        
-       
-        const giftVariantId = 51378223022401; 
-        
-        itemsToAdd.push({ id: giftVariantId, quantity: 1 });
-      }
-      
+  <script>
+    function openVPopup(e, blockId) {
+      e.stopPropagation();
 
-      try {
-        const response = await fetch('/cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items: itemsToAdd }),
-        });
-        if (response.ok) window.location.href = '/cart';
-      } catch (err) {
-        console.error('Cart error:', err);
-      }
-    } else {
-      alert('Please select a size.');
+      const productData = document.getElementById('v-product-data-' + blockId);
+
+      document.getElementById('v-title-' + blockId).innerText = productData.dataset.title;
+      document.getElementById('v-price-' + blockId).innerText = (productData.dataset.price / 100).toFixed(2) + ' €';
+      document.getElementById('v-desc-' + blockId).innerText = productData.dataset.description;
+      document.getElementById('v-img-' + blockId).src = productData.dataset.image;
+
+      document.getElementById('v-popup-modal-' + blockId).classList.add('v-open');
+      document.body.classList.add('v-no-scroll');
+
+      // Auto-select first color option if available
+      // const popup = document.getElementById('v-popup-modal-' + blockId);
+      // const firstColorButton = popup.querySelector('.v-option-item');
+      // if (firstColorButton) {
+      //   firstColorButton.classList.add('v-selected');
+      //   updateVariant(blockId);
+      // }
     }
-  }
-</script>
+
+    function closeVPopup(blockId) {
+      const modal = document.getElementById('v-popup-modal-' + blockId);
+      if (!modal) return;
+      modal.classList.remove('v-open');
+      document.body.classList.remove('v-no-scroll');
+    }
+
+    function handleDropdownChange(selectElement, blockId) {
+      updateVariant(blockId);
+    }
+
+    function updateVariant(blockId) {
+      const popup = document.getElementById('v-popup-modal-' + blockId);
+      const selectedOptions = {};
+
+      // Get selected button options (Color)
+      popup.querySelectorAll('.v-option-item.v-selected').forEach(button => {
+        selectedOptions[button.dataset.optionName] = button.dataset.optionValue;
+      });
+
+      // Get selected dropdown options (Size)
+      popup.querySelectorAll('.v-option-dropdown').forEach(dropdown => {
+        if (dropdown.value) {
+          selectedOptions[dropdown.dataset.optionName] = dropdown.value;
+        }
+      });
+
+      // ✅ FIX 1: Get all variants - this was missing!
+      const variants = document.querySelectorAll('#v-variant-container-' + blockId + ' .v-variant-data');
+      
+      let matchedVariant = null;
+
+      variants.forEach((variant) => {
+        // ✅ FIX 2: Skip if we already found a match
+        if (matchedVariant) return;
+        
+        let match = true;
+
+        for (const key in selectedOptions) {
+          if (variant.dataset[key] !== selectedOptions[key]) {
+            match = false;
+            break; // ✅ FIX 3: Stop checking if one option doesn't match
+          }
+        }
+
+        if (match && variant.dataset.available === 'true') {
+          matchedVariant = variant;
+        }
+      });
+
+      // Update the variant input with the matched variant
+      if (matchedVariant) {
+        document.getElementById('v-variant-input-' + blockId).value = matchedVariant.dataset.variantId;
+        
+        // ✅ BONUS: Debug logging (you can remove these console.log lines later)
+        console.log('✅ Selected:', selectedOptions, '→ Variant ID:', matchedVariant.dataset.variantId);
+      } else {
+        console.log('❌ No match found for:', selectedOptions);
+      }
+    }
+
+    document.addEventListener('click', function (e) {
+      if (!e.target.classList.contains('v-option-item')) return;
+
+      const button = e.target;
+      const popup = button.closest('.v-modal');
+      const blockId = popup.id.replace('v-popup-modal-', '');
+      const optionName = button.dataset.optionName;
+
+      // Remove selection only inside this popup
+      popup.querySelectorAll(`[data-option-name="${optionName}"]`).forEach((el) => {
+        el.classList.remove('v-selected');
+      });
+
+      button.classList.add('v-selected');
+      updateVariant(blockId);
+    });
+  </script>
+{% endif %}
