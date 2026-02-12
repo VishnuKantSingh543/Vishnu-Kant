@@ -187,6 +187,60 @@
   .v-no-scroll {
     overflow: hidden;
   }
+
+  /* --- CUSTOM DROPDOWN STYLES --- */
+  .custom-select-wrapper {
+    position: relative;
+    user-select: none;
+    width: 100%;
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  .custom-select-trigger {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: #fff;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    color: #000;
+  }
+
+  .custom-options {
+    position: absolute;
+    display: none;
+    top: 100%;
+    left: 0;
+    right: 0;
+    border: 1px solid #000;
+    border-top: none;
+    background: #fff;
+    z-index: 100;
+    
+    /* --- SCROLLABLE SETTINGS --- */
+    max-height: 150px; /* Limits height to approx 4 items */
+    overflow-y: auto;  /* Adds scrollbar if list is long */
+  }
+
+  .custom-options.open {
+    display: block;
+  }
+
+  .custom-option-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 1px solid #eee;
+  }
+
+  .custom-option-item:hover {
+    background-color: #000; /* Black Hover */
+    color: #fff; /* White Text */
+  }
 </style>
 
 {% if product %}
@@ -237,25 +291,12 @@
       <div class="v-options-section">
 
         {% for option in product.options_with_values %}
-          <div class="v-option-group">
-            <p class="v-option-label">{{ option.name }}</p>
-
-            {% if option.name == 'Size' %}
-              <!-- Dropdown for Size -->
-              <select 
-                class="v-option-dropdown"
-                data-option-name="{{ option.name | handle }}"
-                onchange="handleDropdownChange(this, '{{ block_id }}')">
-                <option value="">Choose your size</option>
-                {% for value in option.values %}
-                  <option value="{{ value | escape }}">{{ value }}</option>
-                {% endfor %}
-              </select>
-            {% else %}
-              <!-- Buttons for Color -->
+          {% if option.name != 'Size' %}
+            <div class="v-option-group">
+              <p class="v-option-label">{{ option.name }}</p>
+              
               <div class="v-option-values">
                 {% for value in option.values %}
-                  {% comment %} <span class="v-color-swatch" style="background-color: {{ value | downcase }};"></span> {% endcomment %}
                   <button 
                     type="button"
                     class="v-option-item"
@@ -266,8 +307,48 @@
                   </button>
                 {% endfor %}
               </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+
+        {% for option in product.options_with_values %}
+          {% if option.name == 'Size' %}
+              <div class="v-option-group">
+                <p class="v-option-label">{{ option.name }}</p>
+                
+                <div class="custom-select-wrapper">
+                  
+                  <select 
+                    class="v-option-dropdown" 
+                    style="display: none;" 
+                    id="hidden-select-{{ block_id }}"
+                    data-option-name="{{ option.name | handle }}">
+                    <option value="">Choose your size</option>
+                    {% for value in option.values %}
+                      <option value="{{ value | escape }}">{{ value }}</option>
+                    {% endfor %}
+                  </select>
+
+                  <div 
+                    class="custom-select-trigger" 
+                    onclick="toggleCustomSelect(this)">
+                    <span class="custom-trigger-text">Choose your size</span>
+                    <span style="font-size: 10px;">▼</span>
+                  </div>
+
+                  <div class="custom-options">
+                    {% for value in option.values %}
+                      <div 
+                        class="custom-option-item" 
+                        onclick="selectCustomSize(this, '{{ value | escape }}', '{{ block_id }}')">
+                        {{ value }}
+                      </div>
+                    {% endfor %}
+                  </div>
+
+                </div>
+              </div>
             {% endif %}
-          </div>
         {% endfor %}
 
         <form method="post" action="/cart/add">
@@ -289,6 +370,45 @@
   </div>
 
   <script>
+    // Toggle the custom list open/close
+    function toggleCustomSelect(trigger) {
+      const wrapper = trigger.closest('.custom-select-wrapper');
+      const options = wrapper.querySelector('.custom-options');
+      
+      // Close all other open dropdowns first
+      document.querySelectorAll('.custom-options').forEach(el => {
+        if(el !== options) el.classList.remove('open');
+      });
+
+      options.classList.toggle('open');
+    }
+
+    // Handle clicking an option
+    function selectCustomSize(item, value, blockId) {
+      const wrapper = item.closest('.custom-select-wrapper');
+      
+      // 1. Update the hidden <select> so existing logic works
+      const hiddenSelect = wrapper.querySelector('select.v-option-dropdown');
+      hiddenSelect.value = value;
+      
+      // 2. Trigger change event manually for updateVariant()
+      hiddenSelect.dispatchEvent(new Event('change')); // This runs your existing 'updateVariant' function
+
+      // 3. Update the visual text
+      wrapper.querySelector('.custom-trigger-text').innerText = value;
+      
+      // 4. Close the dropdown
+      wrapper.querySelector('.custom-options').classList.remove('open');
+    }
+
+    // Close dropdown if clicking anywhere else
+    window.addEventListener('click', function(e) {
+      if (!e.target.closest('.custom-select-wrapper')) {
+        document.querySelectorAll('.custom-options').forEach(el => el.classList.remove('open'));
+      }
+    });
+
+    
     function openVPopup(e, blockId) {
       e.stopPropagation();
 
